@@ -21,9 +21,10 @@ npm start
 
 # USAGE
 
+
 # LINKS
 
 
 <!-- Updates -->
-<!-- Updated schemas in models based on given -->
 
+<!-- Updated User controller, model params, date getters -->

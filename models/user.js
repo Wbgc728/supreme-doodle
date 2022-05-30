@@ -1,5 +1,5 @@
 const { Schema, Types, model } = require('mongoose');
-const thoughtSchema = require('./thought');
+// const thoughtSchema = require('./thought');
 
 // Schema to create User model
 const userSchema = new Schema(
@@ -14,7 +14,7 @@ const userSchema = new Schema(
             type: String,
             required: true,
             unique: true,
-            // match: 
+            match: /.+\@.+\..+/,
         },
         
         thoughts: [
