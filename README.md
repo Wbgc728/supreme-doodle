@@ -28,3 +28,5 @@ npm start
 <!-- Updates -->
 
 <!-- Updated User controller, model params, date getters -->
+
+<!-- Updated delete user function, added thought controller -->
