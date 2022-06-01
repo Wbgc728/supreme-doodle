@@ -1,4 +1,4 @@
-const { Thought, User } = require('../models');
+const { Thought, User, } = require('../models');
 
 module.exports = {
     // Get all thoughts
@@ -85,7 +85,7 @@ module.exports = {
     removeReaction(req, res) {
         Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $pull: { reactions: req.params.reactionId } },
+            { $pull: { reactions: {reactionId: req.params.reactionId} } },
             { runValidators: true, new: true },
         )
             .then((thought) => res.json(thought))
@@ -94,5 +94,5 @@ module.exports = {
                 return res.status(500).json(err);
             });
 
-    }
+    },
 };
