@@ -18,15 +18,27 @@ module.exports = {
             )
             .catch((err) => res.status(500).json(err));
     },
-    // Create a thought
-    createThought(req, res) {
-        Thought.create(req.body)
-            .then((thought) => res.json(thought))
-            .catch((err) => {
-                console.log(err);
-                return res.status(500).json(err);
-            });
-    },
+   // Create a thought
+  createThought(req, res) {
+    Thought.create(req.body)
+      .then((thought) => {
+        User.findOneAndUpdate(
+          { _id: req.body.userId },
+          { $push: { thoughts: thought._id } },
+          { runValidators: true, new: true }
+        )
+          .then((user) =>
+            !user
+              ? res.status(404).json({ message: 'No user found with that ID' })
+              : res.json(user)
+          )
+          .catch((err) => res.status(500).json(err));
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
     // Delete a thought
     deleteThought(req, res) {
         Thought.findOneAndDelete({ _id: req.params.thoughtId })
@@ -59,8 +71,8 @@ module.exports = {
     //   Create Reaction
     createReaction(req, res) {
         Thought.findOneAndUpdate(
-            {_id: req.params.thoughtId},
-            {$addToSet: {reactions: req.body}},
+            { _id: req.params.thoughtId },
+            { $addToSet: { reactions: req.body } },
             { runValidators: true, new: true },
         )
             .then((thought) => res.json(thought))
@@ -72,9 +84,9 @@ module.exports = {
     },
     removeReaction(req, res) {
         Thought.findOneAndUpdate(
-            {_id: req.params.thoughtId},
-            {$pull: {reactions: req.params.reactionId}},
-            {runValidators: true, new: true },
+            { _id: req.params.thoughtId },
+            { $pull: { reactions: req.params.reactionId } },
+            { runValidators: true, new: true },
         )
             .then((thought) => res.json(thought))
             .catch((err) => {
