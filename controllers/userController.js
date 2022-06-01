@@ -15,9 +15,9 @@ module.exports = {
   // Get all Users
   getUsers(req, res) {
     User.find()
-      .then(async (User) => {
+      .then(async (user) => {
         const userObj = {
-          users,
+          user,
         };
         return res.json(userObj);
       })
@@ -34,8 +34,8 @@ module.exports = {
         !user
           ? res.status(404).json({ message: 'No user with that ID' })
           : res.json({
-              user,
-            })
+            user,
+          })
       )
       .catch((err) => {
         console.log(err);
@@ -51,17 +51,13 @@ module.exports = {
   // Delete a user
   deleteUser(req, res) {
     User.findOneAndRemove({ _id: req.params.userId })
-      .then((user) =>
+      .then((user) => {
         !user
-          ? res.status(404).json({ message: 'No such user exists' })
-          : Thought.deleteMany(
-              { _id: {$in: user.thoughts} },
-            )
-      )
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json(err);
-      });
+          ? res.json({ message: 'No such user exists' })
+          : Thought.deleteMany({ _id: { $in: user.thoughts } })
+      })
+      .then(() => { res.json({ message: 'User & Thoughts deleted' }) })
+      .catch((err) => res.status(500).json(err));
   },
 
   // Add a friend to a user
@@ -76,8 +72,8 @@ module.exports = {
       .then((user) =>
         !user
           ? res
-              .status(404)
-              .json({ message: 'No user found with that ID :(' })
+            .status(404)
+            .json({ message: 'No user found with that ID :(' })
           : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
@@ -92,22 +88,22 @@ module.exports = {
       .then((user) =>
         !user
           ? res
-              .status(404)
-              .json({ message: 'No user found with that ID :(' })
+            .status(404)
+            .json({ message: 'No user found with that ID :(' })
           : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
   },
-//   Update user
-updateUser(req,res) {
-    User.findOneAndUpdate({_id: req.params.userId},{$set: req.body})
-    .then((user) =>
+  //   Update user
+  updateUser(req, res) {
+    User.findOneAndUpdate({ _id: req.params.userId }, { $set: req.body })
+      .then((user) =>
         !user
           ? res
-              .status(404)
-              .json({ message: 'No user found with that ID :(' })
+            .status(404)
+            .json({ message: 'No user found with that ID :(' })
           : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
-}
+  }
 };
